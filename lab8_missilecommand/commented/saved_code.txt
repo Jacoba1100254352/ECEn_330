@@ -1,0 +1,18 @@
+    /*
+    if (missile->type == MISSILE_TYPE_PLAYER && missile->y_current <= missile->y_dest) {
+      eraseMissile(missile);
+
+      if (missile->type == MISSILE_TYPE_ENEMY || missile->type == MISSILE_TYPE_PLANE)
+        missile->currentState = INACTIVE;
+
+      missile->currentState = GROWING;
+    } else if ((missile->type == MISSILE_TYPE_ENEMY || missile->type == MISSILE_TYPE_PLANE) &&
+               missile->y_current >= missile->y_dest) {
+      eraseMissile(missile);
+
+      if (missile->type == MISSILE_TYPE_ENEMY || missile->type == MISSILE_TYPE_PLANE)
+        missile->currentState = INACTIVE;
+      else
+        missile->currentState = GROWING;
+    }
+    break; */
