@@ -11,6 +11,7 @@ static touchscreen_status_t status;
 static touchscreen_states_t currentState;
 static double adc_timer;
 static double adc_settle_ticks;
+static display_point_t coor;
 
 // Initialize the touchscreen driver state machine, with a given tick period (in
 // seconds).
@@ -33,9 +34,11 @@ void touchscreen_tick() {
     // Transition to pressed or waiting
     if (!isTouched)
       currentState = WAITING;
-    else if (adc_timer == adc_settle_ticks) {
+    else if (isTouched && adc_timer == adc_settle_ticks) {
       status = TOUCHSCREEN_PRESSED;
       currentState = PRESSED_ST;
+      uint8_t z;
+      display_getTouchedPoint(&coor.x, &coor.y, &z);
     }
     break;
   case PRESSED_ST:
@@ -76,9 +79,9 @@ void touchscreen_ack_touch() {
 
 // Get the (x,y) location of the last touchscreen touch
 display_point_t touchscreen_get_location() {
-  int16_t x, y;
+  /*int16_t x, y;
   uint8_t z;
   display_getTouchedPoint(&x, &y, &z);
-  display_point_t coor = {x, y};
+  display_point_t coor = {x, y};*/
   return coor;
 }
