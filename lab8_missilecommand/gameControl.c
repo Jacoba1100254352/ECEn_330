@@ -39,7 +39,8 @@ void gameControl_tick() {
 
   // Check for dead plane missiles and re-initialize
   if (missile_is_dead(&plane_missiles[0]))
-    missile_init_plane(&plane_missiles[0], rand() % DISPLAY_WIDTH, rand() % DISPLAY_HEIGHT);
+    missile_init_plane(&plane_missiles[0], rand() % DISPLAY_WIDTH,
+                       rand() % DISPLAY_HEIGHT);
 
   // Initialize Player missiles and shoot if the screen is pressed
   if (touchscreen_get_status() == TOUCHSCREEN_RELEASED) {
@@ -67,12 +68,15 @@ void gameControl_tick() {
 
       // Skip if the missile is already dead (not flying) or there is no
       // explosion from the player
-      if (!missile_is_flying(&missiles[i]) || !missile_is_exploding(&missiles[j]))
+      if (!missile_is_flying(&missiles[i]) ||
+          !missile_is_exploding(&missiles[j]))
         continue;
 
       // Determine if an enemy is within the radius of the player missile
-      if (abs(missiles[i].x_current - missiles[j].x_current) <= missiles[j].radius &&
-          abs(missiles[i].y_current - missiles[j].y_current) <= missiles[j].radius)
+      if (abs(missiles[i].x_current - missiles[j].x_current) <=
+              missiles[j].radius &&
+          abs(missiles[i].y_current - missiles[j].y_current) <=
+              missiles[j].radius)
         missile_trigger_explosion(&missiles[i]);
     }
 }
