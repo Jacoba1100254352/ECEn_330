@@ -56,7 +56,7 @@ void gameControl_tick() {
   // Loop over only half of the missiles, missileIndex initializes to starting
   // Index
   uint8_t missileIndex = (missile_half) ? 0 : CONFIG_MAX_TOTAL_MISSILES / 2;
-  uint8_t endMissileRange = (missile_half) ? CONFIG_MAX_TOTAL_MISSILES / 2 : CONFIG_MAX_TOTAL_MISSILES;
+  uint8_t endMissileRange = missileIndex + CONFIG_MAX_TOTAL_MISSILES / 2;
   for (; missileIndex < endMissileRange; missileIndex++)
     missile_tick(&missiles[missileIndex]);
   missile_half = !missile_half;

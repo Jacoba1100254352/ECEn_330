@@ -18,6 +18,7 @@
 #define LAUNCH_POINT_THREE (DISPLAY_WIDTH / 4) * 3
 
 #define NUMBER_OF_LOCATIONS 3
+#define DOUBLED 2
 
 // Struct for X and Y coordinates
 typedef struct {
@@ -178,17 +179,20 @@ void missile_tick(missile_t *missile) {
     break;
 
   case MOVING:
-    // Erase and set missile as inactive when finished moving
+    if (missile->explode_me) {
+      missile->currentState = GROWING;
+      missile->explode_me = false;
+      eraseMissile(missile);
+    }
 
-    if (missile->length >= missile->total_length)
+    // Erase and set missile as inactive when finished moving
+    else if (missile->length >= missile->total_length) {
       if (missile->type == MISSILE_TYPE_PLAYER) {
         missile->currentState = GROWING;
         // missile_trigger_explosion(missile);
       } else
-        missile->currentState = INACTIVE;
-    if (missile->explode_me) {
-      missile->currentState = GROWING;
-      missile->explode_me = false;
+        missile->currentState = DEAD;
+      eraseMissile(missile);
     }
     break;
 
@@ -296,13 +300,13 @@ static void updateLength(missile_t *missile) {
 
   switch (missile->type) {
   case MISSILE_TYPE_ENEMY:
-    missile->length += CONFIG_ENEMY_MISSILE_DISTANCE_PER_TICK;
+    missile->length += CONFIG_ENEMY_MISSILE_DISTANCE_PER_TICK * DOUBLED;
     break;
   case MISSILE_TYPE_PLANE:
-    missile->length += CONFIG_PLANE_DISTANCE_PER_TICK;
+    missile->length += CONFIG_PLANE_DISTANCE_PER_TICK * DOUBLED;
     break;
   case MISSILE_TYPE_PLAYER:
-    missile->length += CONFIG_PLAYER_MISSILE_DISTANCE_PER_TICK;
+    missile->length += CONFIG_PLAYER_MISSILE_DISTANCE_PER_TICK * DOUBLED;
     break;
   }
 
@@ -336,10 +340,10 @@ static void eraseCircle(missile_t *missile) {
 }
 
 // Increase the missile's radius
-static void increaseRadius(missile_t *missile) { missile->radius += CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK; }
+static void increaseRadius(missile_t *missile) { missile->radius += CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK * DOUBLED; }
 
 // Decrease the missile's radius
-static void decreaseRadius(missile_t *missile) { missile->radius -= CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK; }
+static void decreaseRadius(missile_t *missile) { missile->radius -= CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK * DOUBLED; }
 
 // Draw the circle
 static void drawCircle(missile_t *missile) {
