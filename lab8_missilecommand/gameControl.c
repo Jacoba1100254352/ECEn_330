@@ -63,16 +63,16 @@ void gameControl_tick() {
 
   // Check if missile i should explode, caused by an exploding missile j
   for (uint8_t i = 0; i < CONFIG_MAX_ENEMY_MISSILES; i++)
-    for (uint8_t j = 0; j < CONFIG_MAX_PLAYER_MISSILES; j++) {
+    for (uint8_t j = 0; j < CONFIG_MAX_TOTAL_MISSILES; j++) {
 
       // Skip if the missile is already dead (not flying) or there is no
       // explosion from the player
-      if (!missile_is_flying(&enemy_missiles[i]) || !missile_is_exploding(&player_missiles[j]))
+      if (!missile_is_flying(&missiles[i]) || !missile_is_exploding(&missiles[j]))
         continue;
 
       // Determine if an enemy is within the radius of the player missile
-      if (abs(enemy_missiles[i].x_current - player_missiles[j].x_current) <= player_missiles[j].radius &&
-          abs(enemy_missiles[i].y_current - player_missiles[j].y_current) <= player_missiles[j].radius)
-        missile_trigger_explosion(&enemy_missiles[i]);
+      if (abs(missiles[i].x_current - missiles[j].x_current) <= missiles[j].radius &&
+          abs(missiles[i].y_current - missiles[j].y_current) <= missiles[j].radius)
+        missile_trigger_explosion(&missiles[i]);
     }
 }
