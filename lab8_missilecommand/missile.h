@@ -44,8 +44,7 @@ typedef struct {
   // While exploding, this tracks the current radius
   double radius;
 
-  // Used for game statistics, this tracks whether the missile impacted the
-  // ground.
+  // Used for game statistics, this tracks whether the missile impacted the ground.
   bool impacted;
 
 } missile_t;

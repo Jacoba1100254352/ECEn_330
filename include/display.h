@@ -73,30 +73,21 @@ void display_init();
 // The functionality for these functions comes from Adafruit_GFX.cpp and
 // Adafruit_TFTLCD.cpp.
 void display_drawPixel(int16_t x0, int16_t y0, uint16_t color);
-void display_drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-                      uint16_t color);
+void display_drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
 void display_drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 void display_drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
-void display_drawRect(int16_t x, int16_t y, int16_t w, int16_t h,
-                      uint16_t color);
-void display_fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
-                      uint16_t color);
+void display_drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+void display_fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 void display_fillScreen(uint16_t color);
 void display_invertDisplay(bool i);
 void display_drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
 void display_fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-void display_drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-                          int16_t x2, int16_t y2, uint16_t color);
-void display_fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
-                          int16_t x2, int16_t y2, uint16_t color);
-void display_drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
-                           int16_t radius, uint16_t color);
-void display_fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h,
-                           int16_t radius, uint16_t color);
-void display_drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w,
-                        int16_t h, uint16_t color);
-void display_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
-                      uint16_t bg, uint8_t size);
+void display_drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void display_fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void display_drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, uint16_t color);
+void display_fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, uint16_t color);
+void display_drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color);
+void display_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size);
 void display_setCursor(int16_t x, int16_t y);
 void display_setTextColor(uint16_t c);
 void display_setTextColorBg(uint16_t c, uint16_t bg);
