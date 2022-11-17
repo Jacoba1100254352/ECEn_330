@@ -13,7 +13,7 @@ a.out
 
 # Check and zip generated files
 /test_repo
-*_lab*.zip
+#*_lab*.zip
 
 # Other
 *.dump

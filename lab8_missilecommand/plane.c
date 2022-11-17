@@ -13,16 +13,18 @@
 #define Y_BASE_OFFSET 5.5
 
 #define DOUBLED 2
+#define SQUARED 2
 
 // Keep track of the plane's center, initialized in plane_init()
-uint16_t plane_x_tip;
-uint16_t plane_y_tip;
-uint16_t plane_x_base;
-uint16_t plane_y_bottom;
-uint16_t plane_y_top;
+static uint16_t plane_x_tip;
+static uint16_t plane_y_tip;
+static uint16_t plane_x_base;
+static uint16_t plane_y_bottom;
+static uint16_t plane_y_top;
 
 missile_t plane;
-missile_t *plane_missile;
+
+typedef enum { INACTIVE, MOVING, DEAD } plane_t;
 
 // Function Declarations
 static void updatePosition();
@@ -33,14 +35,10 @@ static display_point_t planeOrigin();
 static display_point_t planeDestination();
 static double distance(display_point_t origin, display_point_t dest);
 
-// States
-typedef enum { INACTIVE, MOVING, DEAD } plane_t;
-plane_t currentState;
-
 // Print the given state passed in by the state variable
 static void printStateString() {
   // Print the given state
-  switch (currentState) {
+  switch (plane.currentState) {
   case INACTIVE:
     printf("INACTIVE");
     break;
@@ -60,22 +58,21 @@ static void printStateString() {
 static void debug() {
   static plane_t previousState = INACTIVE;
   // Print state change when a change occurs
-  if (previousState != currentState) {
+  if (previousState != plane.currentState) {
     printf("\nDEBUG: ");
     printStateString(previousState);
     printf(" -> ");
-    printStateString(currentState);
+    printStateString(plane.currentState);
 
-    previousState = currentState;
+    previousState = plane.currentState;
   }
 }
 
 // Initialize the plane state machine
-// Pass in a pointer to the missile struct (the plane will only have one missile)
-void plane_init(missile_t *_plane_missile) {
-  currentState = INACTIVE;
-
-  plane_missile = _plane_missile;
+// Pass in a pointer to the missile struct (the plane will only have one
+// missile)
+void plane_init(missile_t *plane_missile) {
+  plane.currentState = INACTIVE;
 
   // Start plane at the edge of the screen
   plane.x_origin = DISPLAY_WIDTH;
@@ -102,49 +99,36 @@ void plane_init(missile_t *_plane_missile) {
 
 // State machine tick function
 void plane_tick() {
-  static uint32_t timer = 0;
   // Toggle debug function
   if (PRINT_DEBUG_STATEMENTS)
-    debug(currentState);
+    debug(plane.currentState);
 
   // Perform state update first.
-  switch (currentState) {
+  switch (plane.currentState) {
 
   case INACTIVE:
-    currentState = MOVING;
+    plane.currentState = MOVING;
     break;
 
   case MOVING:
     if (plane.explode_me || plane.x_current <= plane.x_dest) {
-      currentState = DEAD;
+      plane.currentState = DEAD;
       erasePlane();
       plane.explode_me = false;
     }
     break;
 
-  case DEAD:
-    if (timer >= 100) {
-      timer = 0;
-      currentState = INACTIVE;
-      plane_init(&plane_missile[0]);
-    }
-   break;
-
-      default:
+  default:
     break;
   }
 
   // State action switch statement
-  switch (currentState) {
+  switch (plane.currentState) {
 
   case MOVING:
     erasePlane();
     updatePosition();
     drawPlane();
-    break;
-
-  case DEAD:
-    timer += 1;
     break;
 
   default:
@@ -156,19 +140,27 @@ void plane_tick() {
 void plane_explode() { plane.explode_me = true; }
 
 // Get the XY location of the plane
-display_point_t plane_getXY() { return (display_point_t){plane.x_current, plane.y_current}; }
+display_point_t plane_getXY() {
+  return (display_point_t){plane.x_current, plane.y_current};
+}
 
 static void updatePosition() {
-  plane.length += CONFIG_PLANE_DISTANCE_PER_TICK * DOUBLED;
+  plane.length += CONFIG_PLANE_DISTANCE_PER_TICK;
 
-  plane.x_current = plane.x_origin + ((double)plane.length / plane.total_length) * (plane.x_dest - plane.x_origin);
-  plane.y_current = plane.y_origin + ((double)plane.length / plane.total_length) * (plane.y_dest - plane.y_origin);
+  plane.x_current =
+      plane.x_origin + ((double)plane.length / plane.total_length) *
+                           (plane.x_dest - plane.x_origin);
+  plane.y_current =
+      plane.y_origin + ((double)plane.length / plane.total_length) *
+                           (plane.y_dest - plane.y_origin);
 
-  plane.length = (double)distance((display_point_t){plane.x_origin, plane.y_origin},
-                                  (display_point_t){plane.x_current, plane.y_current});
+  plane.length =
+      (double)distance((display_point_t){plane.x_origin, plane.y_origin},
+                       (display_point_t){plane.x_current, plane.y_current});
   updatePlaneCorners();
 }
 
+// Recalculate the location of the plane's tips
 static void updatePlaneCorners() {
   plane_x_tip = plane.x_current - X_TIP_OFFSET;
   plane_y_tip = plane.y_current;
@@ -177,18 +169,21 @@ static void updatePlaneCorners() {
   plane_y_top = plane.y_current + Y_BASE_OFFSET;
 }
 
+// Draw the plane
 static void drawPlane() {
-  display_fillTriangle(plane_x_tip, plane_y_tip, plane_x_base, plane_y_bottom, plane_x_base, plane_y_top,
-                       DISPLAY_WHITE);
+  display_fillTriangle(plane_x_tip, plane_y_tip, plane_x_base, plane_y_bottom,
+                       plane_x_base, plane_y_top, DISPLAY_WHITE);
 }
 
+// Erase the plane
 static void erasePlane() {
-  display_fillTriangle(plane_x_tip, plane_y_tip, plane_x_base, plane_y_bottom, plane_x_base, plane_y_top,
-                       DISPLAY_BLACK);
+  display_fillTriangle(plane_x_tip, plane_y_tip, plane_x_base, plane_y_bottom,
+                       plane_x_base, plane_y_top, DISPLAY_BLACK);
 }
 
 // Find and return the length/distance between two points
 static double distance(display_point_t point1, display_point_t point2) {
   // Calculate the distance between two points
-  return sqrt(pow(abs(point1.x - point2.x), 2) + pow(abs(point1.y - point2.y), 2));
+  return sqrt(pow(abs(point1.x - point2.x), SQUARED) +
+              pow(abs(point1.y - point2.y), SQUARED));
 }
