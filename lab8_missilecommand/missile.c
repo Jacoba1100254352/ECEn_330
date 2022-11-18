@@ -100,7 +100,7 @@ void missile_init_enemy(missile_t *missile) {
 
   missile->x_origin = rand() % DISPLAY_WIDTH;
   missile->y_origin = 0; // rand() % DISPLAY_HEIGHT;
-  
+
   missile->x_dest = rand() % DISPLAY_WIDTH;
   missile->y_dest = DISPLAY_HEIGHT; // rand() % DISPLAY_HEIGHT;
 
@@ -130,7 +130,9 @@ void missile_init_player(missile_t *missile, uint16_t x_dest, uint16_t y_dest) {
 static void init_missiles(missile_t *missile) {
   missile->currentState = INACTIVE;
 
-  missile->total_length = distance((missile_location_t){missile->x_origin, missile->y_origin}, (missile_location_t){missile->x_dest, missile->y_dest});
+  missile->total_length =
+      distance((missile_location_t){missile->x_origin, missile->y_origin},
+               (missile_location_t){missile->x_dest, missile->y_dest});
 
   missile->explode_me = false;
   missile->impacted = false;
@@ -233,37 +235,47 @@ void missile_tick(missile_t *missile) {
 }
 
 // Return whether the given missile is dead.
-bool missile_is_dead(missile_t *missile) { return (missile->currentState == DEAD); }
+bool missile_is_dead(missile_t *missile) {
+  return (missile->currentState == DEAD);
+}
 
 // Return whether the given missile is exploding.  This is needed when detecting
 // whether a missile hits another exploding missile.
 bool missile_is_exploding(missile_t *missile) {
-  return (missile->currentState == GROWING || missile->currentState == SHRINKING);
+  return (missile->currentState == GROWING ||
+          missile->currentState == SHRINKING);
 }
 
 // Return whether the given missile is flying.
-bool missile_is_flying(missile_t *missile) { return (missile->currentState == MOVING); }
+bool missile_is_flying(missile_t *missile) {
+  return (missile->currentState == MOVING);
+}
 
 // Used to indicate that a flying missile should be detonated.  This occurs when
 // an enemy or plane missile is located within an explosion zone.
-void missile_trigger_explosion(missile_t *missile) { missile->explode_me = true; }
+void missile_trigger_explosion(missile_t *missile) {
+  missile->explode_me = true;
+}
 
 // Find and return the length/distance between two points
 static double distance(missile_location_t point1, missile_location_t point2) {
   // Calculate the distance between two points
-  return sqrt(pow(abs(point1.x - point2.x), SQUARED) + pow(abs(point1.y - point2.y), SQUARED));
+  return sqrt(pow(abs(point1.x - point2.x), SQUARED) +
+              pow(abs(point1.y - point2.y), SQUARED));
 }
 
 // Draw the missile
 static void drawMissile(missile_t *missile) {
   uint32_t color = getMissileColor(missile);
 
-  display_drawLine(missile->x_origin, missile->y_origin, missile->x_current, missile->y_current, color);
+  display_drawLine(missile->x_origin, missile->y_origin, missile->x_current,
+                   missile->y_current, color);
 }
 
 // Erase the mimssile
 static void eraseMissile(missile_t *missile) {
-  display_drawLine(missile->x_origin, missile->y_origin, missile->x_current, missile->y_current, DISPLAY_BLACK);
+  display_drawLine(missile->x_origin, missile->y_origin, missile->x_current,
+                   missile->y_current, DISPLAY_BLACK);
 }
 
 // Update the missile length and increase it depending on type
@@ -282,9 +294,11 @@ static void updateLength(missile_t *missile) {
   }
 
   missile->x_current =
-      missile->x_origin + ((double)missile->length / missile->total_length) * (missile->x_dest - missile->x_origin);
+      missile->x_origin + ((double)missile->length / missile->total_length) *
+                              (missile->x_dest - missile->x_origin);
   missile->y_current =
-      missile->y_origin + ((double)missile->length / missile->total_length) * (missile->y_dest - missile->y_origin);
+      missile->y_origin + ((double)missile->length / missile->total_length) *
+                              (missile->y_dest - missile->y_origin);
   missile_location_t pointOrigin = {missile->x_origin, missile->y_origin};
   missile_location_t pointCurrent = {missile->x_current, missile->y_current};
   missile->length = (double)distance(pointOrigin, pointCurrent);
@@ -307,18 +321,24 @@ static uint16_t getMissileColor(missile_t *missile) {
 
 // Erase the circle for the explosions
 static void eraseCircle(missile_t *missile) {
-  display_fillCircle(missile->x_current, missile->y_current, missile->radius, DISPLAY_BLACK);
+  display_fillCircle(missile->x_current, missile->y_current, missile->radius,
+                     DISPLAY_BLACK);
 }
 
 // Increase the missile's radius
-static void increaseRadius(missile_t *missile) { missile->radius += CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK * DOUBLED; }
+static void increaseRadius(missile_t *missile) {
+  missile->radius += CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK * DOUBLED;
+}
 
 // Decrease the missile's radius
-static void decreaseRadius(missile_t *missile) { missile->radius -= CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK * DOUBLED; }
+static void decreaseRadius(missile_t *missile) {
+  missile->radius -= CONFIG_EXPLOSION_RADIUS_CHANGE_PER_TICK * DOUBLED;
+}
 
 // Draw the circle
 static void drawCircle(missile_t *missile) {
   uint32_t color = getMissileColor(missile);
 
-  display_fillCircle(missile->x_current, missile->y_current, missile->radius, color);
+  display_fillCircle(missile->x_current, missile->y_current, missile->radius,
+                     color);
 }

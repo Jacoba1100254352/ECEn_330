@@ -28,7 +28,8 @@ static void writeImpactedStat();
 missile_t missiles[CONFIG_MAX_TOTAL_MISSILES];
 missile_t *enemy_missiles = &(missiles[0]);
 missile_t *player_missiles = &(missiles[CONFIG_MAX_ENEMY_MISSILES]);
-missile_t *plane_missiles = &(missiles[CONFIG_MAX_ENEMY_MISSILES + CONFIG_MAX_PLAYER_MISSILES]);
+missile_t *plane_missiles =
+    &(missiles[CONFIG_MAX_ENEMY_MISSILES + CONFIG_MAX_PLAYER_MISSILES]);
 
 // Stats
 uint16_t impacted;
@@ -113,12 +114,15 @@ void gameControl_tick() {
 
       // Skip if the missile is already dead (not flying) or there is no
       // explosion from the player
-      if (!missile_is_flying(&missiles[j]) || !missile_is_exploding(&missiles[i]))
+      if (!missile_is_flying(&missiles[j]) ||
+          !missile_is_exploding(&missiles[i]))
         continue;
 
       // Determine if an enemy is within the radius of the player missile
-      if (abs(missiles[i].x_current - missiles[j].x_current) <= missiles[i].radius &&
-          abs(missiles[i].y_current - missiles[j].y_current) <= missiles[i].radius)
+      if (abs(missiles[i].x_current - missiles[j].x_current) <=
+              missiles[i].radius &&
+          abs(missiles[i].y_current - missiles[j].y_current) <=
+              missiles[i].radius)
         missile_trigger_explosion(&missiles[j]);
     }
 
@@ -135,8 +139,10 @@ void gameControl_tick() {
 
     // Determine if the plane missile is within the radius of the player missile
     for (uint8_t i = 0; i < CONFIG_MAX_PLAYER_MISSILES; i++)
-      if (abs(plane_missiles[0].x_current - player_missiles[i].x_current) <= player_missiles[i].radius &&
-          abs(plane_missiles[0].y_current - player_missiles[i].y_current) <= player_missiles[i].radius)
+      if (abs(plane_missiles[0].x_current - player_missiles[i].x_current) <=
+              player_missiles[i].radius &&
+          abs(plane_missiles[0].y_current - player_missiles[i].y_current) <=
+              player_missiles[i].radius)
         missile_trigger_explosion(&plane_missiles[0]);
   }
 
