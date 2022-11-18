@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "lab8",
+            "name": "lab9",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/lab8_missilecommand/lab8_m1.elf",
+            "program": "${workspaceFolder}/build/lab9_project/lab9.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
