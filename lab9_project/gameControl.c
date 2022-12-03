@@ -28,19 +28,6 @@ void gameControl_init() { // Clear the screen
 // and updating statistics.
 void gameControl_tick() {
 
-  ///   QUESTION!!! Should this be put in the player_tick() function or stay here? What do you think?
-  // Initialize Player missiles and shoot if the screen is pressed
-  if (touchscreen_get_status() == TOUCHSCREEN_RELEASED) {
-    display_point_t coor = touchscreen_get_location();
-    for (uint16_t i = 0; i < CONFIG_MAX_PLAYERS; i++)
-      if (player_is_turn(&players[i]) && bullet_is_dead(&players[i])) {
-        bullet_init(&players[i], coor.x, coor.y);
-        break;
-      }
-
-    touchscreen_ack_touch();
-  }
-
   // Tick the players
   for (uint16_t i = 0; i < CONFIG_MAX_PLAYERS; i++)
     player_tick(&players[i]);
@@ -60,3 +47,5 @@ void gameControl_tick() {
       ; // Player dies (-1 point?)
   }
 }
+
+// Display control, display_init.c

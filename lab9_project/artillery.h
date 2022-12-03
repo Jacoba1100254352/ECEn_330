@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 /* The same player structure will be used for all players in the game,
 so this enum is used to identify the type of player */
 typedef enum { PLAYER_TYPE_PLAYER, PLAYER_TYPE_ENEMY } player_type_t;
